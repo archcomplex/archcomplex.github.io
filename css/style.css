@@ -5,7 +5,7 @@
   --ink-soft:#68757C;
   --accent:#3E6E8E;
   --accent-soft:#E1EAEF;
-  --skeleton:#C4D4DD;      /* было #CCDBE3 — темнее для контраста с шиммером */
+  --skeleton:#CCDBE3;
   --line:#E4E9EC;
   --radius:8px;
   --radius-sm:6px;
@@ -121,7 +121,7 @@ main{max-width:1160px;margin:0 auto;padding:18px 24px 100px;}
 .breadcrumb .current{color:var(--ink);font-weight:500;}
 
 .project-hero{max-width:1160px;margin:0 auto;padding:26px 24px 10px;display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;}
-.project-hero .ph-media{border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;background:var(--skeleton);position:relative;}
+.project-hero .ph-media{border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;background:var(--skeleton);}
 .project-hero .ph-media img{width:100%;height:100%;object-fit:cover;display:block;}
 .project-hero .ph-info .badge{background:var(--accent-soft);color:var(--accent);display:inline-block;padding:6px 14px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:500;margin-bottom:16px;}
 .project-hero h1{font-size:clamp(26px,3.4vw,36px);font-weight:700;margin:0 0 14px;line-height:1.22;}
@@ -182,35 +182,22 @@ footer a:hover{color:var(--accent);}
 
 .project-card .teaser, .teaser { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ============================================================
-   ЗАГРУЗКА ИЗОБРАЖЕНИЙ: плавное проявление + шиммер
-   ============================================================ */
+.project-hero .ph-media{position:relative;}
 
-/* Исходное состояние: прозрачное, чуть увеличенное, размытое */
 .thumb img,
 .project-hero .ph-media img,
 .project-hero-full .ph-media-full img{
   opacity:0;
-  transform:scale(1.06);
-  filter:blur(6px);
-  transition:
-    opacity .9s cubic-bezier(.16,.84,.44,1),
-    transform 1s cubic-bezier(.16,.84,.44,1),
-    filter .7s ease-out;
-  will-change:opacity, transform, filter;
+  transform:scale(1.035);
+  transition:opacity .6s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
 }
-
-/* Загружено: чёткое, в масштабе, без размытия */
 .thumb.img-loaded img,
 .project-hero .ph-media.img-loaded img,
 .project-hero-full .ph-media-full.img-loaded img{
   opacity:1;
   transform:scale(1);
-  filter:blur(0);
-  will-change:auto;
 }
 
-/* Шиммер: белая полоса проходит через весь блок */
 .thumb::after,
 .project-hero .ph-media::after,
 .project-hero-full .ph-media-full::after{
@@ -219,59 +206,30 @@ footer a:hover{color:var(--accent);}
   inset:0;
   pointer-events:none;
   border-radius:inherit;
-  background:linear-gradient(
-    100deg,
-    rgba(255,255,255,0)    30%,
-    rgba(255,255,255,0.55) 50%,
-    rgba(255,255,255,0)    70%
-  );
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.5) 40%, rgba(255,255,255,.9) 50%, rgba(255,255,255,.5) 60%, transparent);
   background-size:200% 100%;
-  background-repeat:no-repeat;
-  animation:img-shimmer 1.6s ease-in-out infinite;
+  animation:img-shimmer 1.5s ease-in-out infinite;
   opacity:1;
   transition:opacity .3s ease;
-  z-index:1;
 }
-
-/* Как только фото загрузилось — шиммер плавно гаснет вместе с проявлением */
 .thumb.img-loaded::after,
 .project-hero .ph-media.img-loaded::after,
 .project-hero-full .ph-media-full.img-loaded::after{
   opacity:0;
   animation-play-state:paused;
-  transition:opacity .9s ease .15s;
 }
-
 @keyframes img-shimmer{
-  0%   { background-position:150% 0; }
-  100% { background-position:-50% 0; }
+  0%{background-position:-130% 0;}
+  100%{background-position:130% 0;}
 }
-
-/* Если фото не загрузилось — нейтральный серый фон, без вечного шиммера */
-.thumb.img-failed,
-.project-hero .ph-media.img-failed,
-.project-hero-full .ph-media-full.img-failed{
-  background:#E8ECEE;
-}
-
-/* Уважаем настройки пользователя */
 @media(prefers-reduced-motion:reduce){
   .thumb::after,
   .project-hero .ph-media::after,
   .project-hero-full .ph-media-full::after{animation:none;}
   .thumb img,
   .project-hero .ph-media img,
-  .project-hero-full .ph-media-full img{
-    transition:none;
-    transform:none;
-    filter:none;
-    opacity:1;
-  }
+  .project-hero-full .ph-media-full img{transition:none;transform:none;}
 }
-
-/* ============================================================
-   Навигация по проектам (prev/next поверх hero-изображения)
-   ============================================================ */
 
 .project-hero-full .project-image-wrap{
   position:relative;
