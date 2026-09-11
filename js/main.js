@@ -1,14 +1,42 @@
+function showImageFallback(container, img){
+  if(container.querySelector('.img-fallback')) return;
+  const fallback = document.createElement('div');
+  fallback.className = 'img-fallback';
+
+  const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  icon.setAttribute('viewBox', '0 0 24 24');
+  icon.setAttribute('aria-hidden', 'true');
+  icon.innerHTML = '<rect x="3" y="4.5" width="18" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/>' +
+    '<circle cx="8.5" cy="9.5" r="1.6" fill="currentColor"/>' +
+    '<path d="M4 16.5l5-5 3.5 3.5L16 11l4 4.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>';
+
+  const text = document.createElement('span');
+  text.textContent = img.getAttribute('alt') || 'Изображение недоступно';
+
+  fallback.appendChild(icon);
+  fallback.appendChild(text);
+  container.appendChild(fallback);
+}
+
 function initImageFade(scope){
   const root = scope || document;
   root.querySelectorAll('.thumb img, .project-hero .ph-media img, .project-hero-full .ph-media-full img').forEach(img=>{
     const container = img.closest('.thumb, .project-hero .ph-media, .project-hero-full .ph-media-full');
     if(!container || container.classList.contains('img-loaded')) return;
+
     const markLoaded = ()=> container.classList.add('img-loaded');
+    const markError = ()=>{
+      container.classList.add('img-loaded', 'img-error');
+      showImageFallback(container, img);
+    };
+
     if(img.complete && img.naturalWidth > 0){
       markLoaded();
+    }else if(img.complete){
+      markError();
     }else{
       img.addEventListener('load', markLoaded, {once: true});
-      img.addEventListener('error', markLoaded, {once: true});
+      img.addEventListener('error', markError, {once: true});
     }
   });
 }
