@@ -1,35 +1,18 @@
-/* ============================================================
-   Плавное появление изображений + гашение шиммера
-   ============================================================ */
 function initImageFade(scope){
   const root = scope || document;
-  root.querySelectorAll(
-    '.thumb img, .project-hero .ph-media img, .project-hero-full .ph-media-full img'
-  ).forEach(img=>{
-    const container = img.closest(
-      '.thumb, .project-hero .ph-media, .project-hero-full .ph-media-full'
-    );
+  root.querySelectorAll('.thumb img, .project-hero .ph-media img, .project-hero-full .ph-media-full img').forEach(img=>{
+    const container = img.closest('.thumb, .project-hero .ph-media, .project-hero-full .ph-media-full');
     if(!container || container.classList.contains('img-loaded')) return;
-
     const markLoaded = ()=> container.classList.add('img-loaded');
-    const markFailed = ()=> container.classList.add('img-loaded', 'img-failed');
-
     if(img.complete && img.naturalWidth > 0){
-      // Уже в кэше — показываем сразу
       markLoaded();
-    }else if(img.complete && img.naturalWidth === 0){
-      // Загрузилось, но битое
-      markFailed();
     }else{
       img.addEventListener('load', markLoaded, {once: true});
-      img.addEventListener('error', markFailed, {once: true});
+      img.addEventListener('error', markLoaded, {once: true});
     }
   });
 }
 
-/* ============================================================
-   Горизонтальная карусель категорий
-   ============================================================ */
 function initCatNav(){
   document.querySelectorAll('.cat-scroll').forEach(wrap=>{
     const grid = wrap.querySelector('.cat-grid');
@@ -45,9 +28,6 @@ function initCatNav(){
   });
 }
 
-/* ============================================================
-   Бесшовная навигация между проектами (SPA-стиль)
-   ============================================================ */
 function initProjectNav(){
   const SWAP_SELECTORS = [
     '.project-hero-full',
@@ -122,9 +102,6 @@ function initProjectNav(){
   });
 }
 
-/* ============================================================
-   Запуск
-   ============================================================ */
 document.addEventListener('DOMContentLoaded', ()=>{
   initCatNav();
   initProjectNav();
