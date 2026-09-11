@@ -1,3 +1,18 @@
+function initImageFade(scope){
+  const root = scope || document;
+  root.querySelectorAll('.thumb img, .project-hero .ph-media img, .project-hero-full .ph-media-full img').forEach(img=>{
+    const container = img.closest('.thumb, .project-hero .ph-media, .project-hero-full .ph-media-full');
+    if(!container || container.classList.contains('img-loaded')) return;
+    const markLoaded = ()=> container.classList.add('img-loaded');
+    if(img.complete && img.naturalWidth > 0){
+      markLoaded();
+    }else{
+      img.addEventListener('load', markLoaded, {once: true});
+      img.addEventListener('error', markLoaded, {once: true});
+    }
+  });
+}
+
 function initCatNav(){
   document.querySelectorAll('.cat-scroll').forEach(wrap=>{
     const grid = wrap.querySelector('.cat-grid');
@@ -13,25 +28,6 @@ function initCatNav(){
   });
 }
 
-/*
- * Round prev/next buttons over the project image ("Предыдущий/Следующий
- * проект"). These are real <a href="..."> links to a neighbouring project
- * page, kept as real links on purpose (SEO, "open in new tab", no-JS
- * fallback). The problem: because they are a full page navigation, the
- * browser tears down and reloads the whole document just to swap one photo,
- * and in the process the viewport resets to the top of the new page —
- * visible as a "jump" / refresh even though only the image should change.
- *
- * Fix: intercept the click, fetch the target project page in the
- * background, and swap just the parts of the DOM that differ (hero image +
- * nav links, title, description, breadcrumb, related projects) into the
- * current, already-rendered page. No navigation happens, so nothing
- * reloads and the scroll position / button position never move. The
- * address bar and document.title are updated via history.pushState so the
- * URL, back/forward button and page title still stay correct.
- * If anything goes wrong (network error, fetch unsupported, cross-origin),
- * it falls back to a normal link click.
- */
 function initProjectNav(){
   const SWAP_SELECTORS = [
     '.project-hero-full',
@@ -89,26 +85,18 @@ function initProjectNav(){
       metaDesc.setAttribute('content', newMetaDesc.getAttribute('content'));
     }
 
-    // The DOM swap above is the part that actually matters for the "page
-    // jumps to top" bug. Some mobile browsers (e.g. pages opened inside an
-    // in-app/sandboxed webview) throw a SecurityError on pushState. That
-    // should not undo a swap that already succeeded, so it gets its own
-    // try/catch instead of sharing one with the fetch above.
     try{
       history.pushState({projectNav: true}, '', href);
     }catch(pushStateErr){
       console.error('project-nav: history.pushState failed', pushStateErr);
     }
 
-    // Newly inserted prev/next links need their own click handler.
     bindLinks(document);
+    initImageFade(document);
   }
 
   bindLinks(document);
 
-  // Keep the back/forward buttons correct: a full reload of whatever URL
-  // the browser has now put in the address bar is the simplest way to
-  // guarantee the page matches history state exactly.
   window.addEventListener('popstate', e=>{
     if(e.state && e.state.projectNav) window.location.reload();
   });
@@ -117,4 +105,5 @@ function initProjectNav(){
 document.addEventListener('DOMContentLoaded', ()=>{
   initCatNav();
   initProjectNav();
+  initImageFade();
 });
