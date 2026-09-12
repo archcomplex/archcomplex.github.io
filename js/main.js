@@ -18,17 +18,30 @@ function showImageFallback(container, img){
   container.appendChild(fallback);
 }
 
+const MIN_SKELETON_MS = 500;
+
 function initImageFade(scope){
   const root = scope || document;
   root.querySelectorAll('.thumb img, .project-hero .ph-media img, .project-hero-full .ph-media-full img').forEach(img=>{
     const container = img.closest('.thumb, .project-hero .ph-media, .project-hero-full .ph-media-full');
     if(!container || container.classList.contains('img-loaded')) return;
 
-    const markLoaded = ()=> container.classList.add('img-loaded');
-    const markError = ()=>{
+    const startedAt = performance.now();
+    const runAfterMinDelay = (fn)=>{
+      const elapsed = performance.now() - startedAt;
+      const remaining = MIN_SKELETON_MS - elapsed;
+      if(remaining > 0){
+        setTimeout(fn, remaining);
+      }else{
+        fn();
+      }
+    };
+
+    const markLoaded = ()=> runAfterMinDelay(()=> container.classList.add('img-loaded'));
+    const markError = ()=> runAfterMinDelay(()=>{
       container.classList.add('img-loaded', 'img-error');
       showImageFallback(container, img);
-    };
+    });
 
     if(img.complete && img.naturalWidth > 0){
       markLoaded();
