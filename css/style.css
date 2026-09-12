@@ -1,3 +1,6 @@
+Вот полный актуальный `css/style.css`:
+
+```css
 :root{
   --bg:#F7F9FA;
   --panel:#FFFFFF;
@@ -286,35 +289,6 @@ footer a:hover{color:var(--accent);}
    Анимации и интерактивные эффекты
    ============================================================ */
 
-/* --- Усиленный hover-эффект на карточках проектов --- */
-.card{
-  will-change:transform;
-}
-/* .card:hover{
-  border-color:var(--accent);
-}*/
-.card .thumb{
-  overflow:hidden;
-}
-.card .thumb img{
-  transition:opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1);
-}
-.card:hover .thumb img{
-  transform:scale(1.08);
-}
-.card .card-body h3{
-  transition:color .2s ease;
-}
-.card:hover .card-body h3{
-  color:var(--accent);
-}
-.card .pill{
-  transition:transform .3s ease;
-}
-.card:hover .pill{
-  transform:translateY(-2px);
-}
-
 /* --- Scroll-reveal: карточки проступают при прокрутке --- */
 .reveal{
   opacity:0;
@@ -351,8 +325,7 @@ footer a:hover{color:var(--accent);}
 
 @media(prefers-reduced-motion:reduce){
   header.site{transition:none;}
-  .card .thumb img{transition:opacity .6s cubic-bezier(.22,.61,.36,1);}
-  .card:hover .thumb img{transform:none;}
   .reveal{opacity:1;transform:none;transition:none;}
   .ph-scale-wrap img{transition:none;}
 }
+```
