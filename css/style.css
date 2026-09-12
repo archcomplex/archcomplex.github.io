@@ -286,21 +286,6 @@ footer a:hover{color:var(--accent);}
    Анимации и интерактивные эффекты
    ============================================================ */
 
-/* --- Sticky-хедер с плавным появлением подложки/тени при скролле --- */
-header.site{
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:rgba(247,249,250,0.86);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  transition:box-shadow .35s ease, background-color .35s ease;
-}
-header.site.is-scrolled{
-  background:rgba(247,249,250,0.96);
-  box-shadow:0 8px 24px rgba(32,38,43,0.09);
-}
-
 /* --- Усиленный hover-эффект на карточках проектов --- */
 .card{
   will-change:transform;
