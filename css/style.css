@@ -283,3 +283,93 @@ footer a:hover{color:var(--accent);}
     transform:translate(50%,-50%);
   }
 }
+
+/* ============================================================
+   Анимации и интерактивные эффекты
+   ============================================================ */
+
+/* --- Sticky-хедер с плавным появлением подложки/тени при скролле --- */
+header.site{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(247,249,250,0.86);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  transition:box-shadow .35s ease, background-color .35s ease;
+}
+header.site.is-scrolled{
+  background:rgba(247,249,250,0.96);
+  box-shadow:0 8px 24px rgba(32,38,43,0.09);
+}
+
+/* --- Усиленный hover-эффект на карточках проектов --- */
+.card{
+  will-change:transform;
+}
+.card:hover{
+  border-color:var(--accent);
+}
+.card .thumb{
+  overflow:hidden;
+}
+.card .thumb img{
+  transition:opacity 1s cubic-bezier(.22,.61,.36,1), filter .9s ease-out, transform .6s cubic-bezier(.22,.61,.36,1);
+}
+.card:hover .thumb img{
+  transform:scale(1.08);
+}
+.card .card-body h3{
+  transition:color .2s ease;
+}
+.card:hover .card-body h3{
+  color:var(--accent);
+}
+.card .pill{
+  transition:transform .3s ease;
+}
+.card:hover .pill{
+  transform:translateY(-2px);
+}
+
+/* --- Scroll-reveal: карточки проступают при прокрутке --- */
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+}
+.reveal.is-visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* --- Параллакс/масштабирование на главном hero-изображении проекта --- */
+.project-hero-full .ph-media-full{
+  overflow:visible;
+}
+.ph-scale-wrap{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  border-radius:var(--radius);
+  position:relative;
+}
+.ph-scale-wrap img{
+  will-change:transform;
+  transform:scale(1) translateY(0);
+  transition:transform .1s linear;
+}
+
+/* --- Анимированные счётчики статистики --- */
+.side-stat b{
+  display:block;
+  font-variant-numeric:tabular-nums;
+}
+
+@media(prefers-reduced-motion:reduce){
+  header.site{transition:none;}
+  .card .thumb img{transition:opacity 1s cubic-bezier(.22,.61,.36,1), filter .9s ease-out;}
+  .card:hover .thumb img{transform:none;}
+  .reveal{opacity:1;transform:none;transition:none;}
+  .ph-scale-wrap img{transition:none;}
+}
