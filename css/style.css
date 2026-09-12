@@ -321,10 +321,10 @@ footer a:hover{color:var(--accent);}
   font-variant-numeric:tabular-nums;
 }
 
-@media(prefers-reduced-motion:reduce){
+/*@media(prefers-reduced-motion:reduce){
   header.site{transition:none;}
   .card .thumb img{transition:opacity .6s cubic-bezier(.22,.61,.36,1);}
   .card:hover .thumb img{transform:none;}
   .reveal{opacity:1;transform:none;transition:none;}
   .ph-scale-wrap img{transition:none;}
-}
+}*/
