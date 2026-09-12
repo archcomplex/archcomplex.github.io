@@ -54,58 +54,6 @@ function initImageFade(scope){
   });
 }
 
-function initStickyHeader(){
-  const header = document.querySelector('header.site');
-  if(!header) return;
-  const THRESHOLD = 12;
-  let ticking = false;
-  const update = ()=>{
-    header.classList.toggle('is-scrolled', window.scrollY > THRESHOLD);
-    ticking = false;
-  };
-  update();
-  window.addEventListener('scroll', ()=>{
-    if(!ticking){
-      window.requestAnimationFrame(update);
-      ticking = true;
-    }
-  }, {passive: true});
-}
-
-function initScrollReveal(scope){
-  const root = scope || document;
-  const items = root.querySelectorAll('.card:not(.reveal-bound)');
-  if(!items.length) return;
-
-  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  items.forEach((el, i)=>{
-    el.classList.add('reveal-bound');
-    if(prefersReducedMotion){
-      el.classList.add('is-visible');
-      return;
-    }
-    el.classList.add('reveal');
-    el.style.transitionDelay = Math.min(i % 6, 5) * 60 + 'ms';
-  });
-
-  if(prefersReducedMotion || !('IntersectionObserver' in window)){
-    items.forEach(el=> el.classList.add('is-visible'));
-    return;
-  }
-
-  const observer = new IntersectionObserver((entries, obs)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add('is-visible');
-        obs.unobserve(entry.target);
-      }
-    });
-  }, {threshold: 0.12, rootMargin: '0px 0px -40px 0px'});
-
-  items.forEach(el=> observer.observe(el));
-}
-
 function initHeroParallax(scope){
   const root = scope || document;
   const media = root.querySelector('.project-hero-full .ph-media-full');
@@ -156,8 +104,7 @@ function animateCounter(el){
     const elapsed = now - start;
     const t = Math.min(elapsed / DURATION, 1);
     const eased = 1 - Math.pow(1 - t, 3);
-    const value = Math.round(target * eased);
-    el.textContent = value + suffix;
+    el.textContent = Math.round(target * eased) + suffix;
     if(t < 1){
       window.requestAnimationFrame(step);
     }else{
@@ -173,12 +120,9 @@ function initStatCounters(scope){
   if(!items.length) return;
 
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   items.forEach(el=> el.classList.add('counter-bound'));
 
-  if(prefersReducedMotion || !('IntersectionObserver' in window)){
-    return;
-  }
+  if(prefersReducedMotion || !('IntersectionObserver' in window)) return;
 
   const observer = new IntersectionObserver((entries, obs)=>{
     entries.forEach(entry=>{
@@ -272,7 +216,6 @@ function initProjectNav(){
 
     bindLinks(document);
     initImageFade(document);
-    initScrollReveal(document);
     initHeroParallax(document);
   }
 
@@ -287,8 +230,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initCatNav();
   initProjectNav();
   initImageFade();
-  initStickyHeader();
-  initScrollReveal();
   initHeroParallax();
   initStatCounters();
 });

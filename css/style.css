@@ -104,7 +104,7 @@ main{max-width:1160px;margin:0 auto;padding:18px 24px 100px;}
   background:var(--panel);border-radius:var(--radius);overflow:hidden;
   box-shadow:0 1px 2px rgba(42,42,40,0.04);transition:.2s;border:1px solid var(--line);
 }
-a.card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(42,42,40,0.09);}
+.card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(42,42,40,0.09);}
 .thumb{aspect-ratio:4/3;position:relative;background:var(--skeleton);overflow:hidden;}
 .thumb img{width:100%;height:100%;display:block;object-fit:cover;object-position:center;}
 .pill{position:absolute;top:14px;left:14px;background:rgba(255,255,255,0.92);padding:5px 12px;border-radius:var(--radius-sm);font-size:11.5px;font-weight:500;color:var(--accent);}
@@ -200,17 +200,39 @@ footer a:hover{color:var(--accent);}
 }
 
 .thumb img,
-.project-hero .ph-media img,
-.project-hero-full .ph-media-full img{
+.project-hero .ph-media img{
   opacity:0;
   transform:scale(1.02);
-  transition:opacity .6s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+  transition:opacity 1s cubic-bezier(.22,.61,.36,1), transform 1.15s cubic-bezier(.22,.61,.36,1);
 }
 .thumb.img-loaded img,
-.project-hero .ph-media.img-loaded img,
-.project-hero-full .ph-media-full.img-loaded img{
+.project-hero .ph-media.img-loaded img{
   opacity:1;
   transform:scale(1);
+}
+
+/* Большое изображение проекта: тот же fade, плюс лёгкий параллакс при
+   скролле (см. initHeroParallax в main.js). Картинку оборачивает
+   .ph-scale-wrap, который обрезает края, пока img чуть смещается и
+   слегка увеличивается за счёт scroll-прогресса. */
+.project-hero-full .ph-media-full img{
+  opacity:0;
+  transition:opacity 1s cubic-bezier(.22,.61,.36,1);
+}
+.project-hero-full .ph-media-full.img-loaded img{
+  opacity:1;
+}
+.ph-scale-wrap{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  border-radius:var(--radius);
+  position:relative;
+}
+.ph-scale-wrap img{
+  will-change:transform;
+  transform:scale(1) translateY(0);
+  transition:transform .1s linear;
 }
 
 .img-fallback{
@@ -245,8 +267,9 @@ footer a:hover{color:var(--accent);}
   .project-hero .ph-media,
   .project-hero-full .ph-media-full{animation:none;}
   .thumb img,
-  .project-hero .ph-media img,
-  .project-hero-full .ph-media-full img{transition:none;transform:none;filter:none;}
+  .project-hero .ph-media img{transition:none;transform:none;}
+  .project-hero-full .ph-media-full img{transition:opacity 1s cubic-bezier(.22,.61,.36,1);}
+  .ph-scale-wrap img{transition:none;transform:none;}
 }
 
 .project-hero-full .project-image-wrap{
@@ -282,47 +305,9 @@ footer a:hover{color:var(--accent);}
   }
 }
 
-/* ============================================================
-   Анимации и интерактивные эффекты
-   ============================================================ */
-
-/* --- Scroll-reveal: карточки проступают при прокрутке --- */
-.reveal{
-  opacity:0;
-  transform:translateY(28px);
-  transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
-}
-.reveal.is-visible{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* --- Параллакс/масштабирование на главном hero-изображении проекта --- */
-.project-hero-full .ph-media-full{
-  overflow:visible;
-}
-.ph-scale-wrap{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  border-radius:var(--radius);
-  position:relative;
-}
-.ph-scale-wrap img{
-  will-change:transform;
-  transform:scale(1) translateY(0);
-  transition:transform .1s linear;
-}
-
-/* --- Анимированные счётчики статистики --- */
+/* --- Анимированные счётчики статистики (20+ / 130+ / 10+) ---
+   Сам счёт от 0 до значения делает initStatCounters() в main.js;
+   здесь только фиксируем ширину цифр, чтобы они не "прыгали". */
 .side-stat b{
-  display:block;
   font-variant-numeric:tabular-nums;
-}
-
-@media(prefers-reduced-motion:reduce){
-  header.site{transition:none;}
-  .card .thumb img{transition:opacity .6s cubic-bezier(.22,.61,.36,1);}
-  .reveal{opacity:1;transform:none;transition:none;}
-  .ph-scale-wrap img{transition:none;}
 }
